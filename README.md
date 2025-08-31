@@ -15,7 +15,7 @@ The assessment has **2 steps**. Please read all requirements carefully and follo
 ### Requirements
 
 - Follow the Figma design: [Figma file](https://www.figma.com/design/I9tcEpo7FfChsfuoY4aH2o/Frontend-Technical-Assessment?node-id=0-1)
-- Build an auth flow using the API (Swagger docs will be provided)
+- Build an auth flow using the API ([Swagger docs](https://api-production-3683.up.railway.app/docs))
 - Use only:
   - Next.js 15+ (App Router, use `/src` folder)
   - TailwindCSS
@@ -36,7 +36,7 @@ The assessment has **2 steps**. Please read all requirements carefully and follo
 
 - Login
 - Register
-- Reset password (all endpoints will be ready)
+- Reset password
 - Session management (show us how you handle it)
 - Logout flow
 
