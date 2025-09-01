@@ -9,7 +9,8 @@
 }
 
 :root {
-  --background-primary: #232325;
+  --background: #161617;
+  --background-primary: #23232580;
   --background-secondary: #1F1F1F;
   --text-primary: #ffffff;
   --text-secondary: #878787;
@@ -20,6 +21,7 @@
 
 
 @theme {
+  --color-background: var(--background);
   --color-background-primary: var(--background-primary);
   --color-background-secondary: var(--background-secondary);
   --color-text-primary: var(--text-primary);
@@ -34,6 +36,6 @@
   body {
     font-family: 'e-Ukraine', sans-serif;
     color: var(--text-primary);
-    background-color: var(--background-primary);
+    background-color: var(--background);
   }
 }
