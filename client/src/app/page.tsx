@@ -1,3 +1,3 @@
-const Home = () => <main className="font-sans">Home</main>;
+const Home = () => <main>Home</main>;
 
 export default Home;
