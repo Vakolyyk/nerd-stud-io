@@ -122,7 +122,7 @@ export const StaggerTestimonials = () => {
 interface TestimonialProps {
   position: number;
   testimonial: TestimonialType;
-  handleMove: Function;
+  handleMove: (position: number) => void;
   cardSize: number;
 }
 

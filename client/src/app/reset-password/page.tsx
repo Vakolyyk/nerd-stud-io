@@ -1,8 +1,11 @@
+import { Suspense } from "react";
 import ResetPasswordForm from "./component/ResetPasswordForm";
 
 const ResetPasswordPage = () => (
   <div className="flex flex-col justify-center">
-    <ResetPasswordForm />
+    <Suspense>
+      <ResetPasswordForm />
+    </Suspense>
   </div>
 );
 

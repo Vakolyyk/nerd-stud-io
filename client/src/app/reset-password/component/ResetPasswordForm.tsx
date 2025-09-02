@@ -24,7 +24,7 @@ type ResetPasswordFormInputs = {
 const ResetPasswordForm = () => {
   const token = useSearchParams().get('token');
 
-  const [step, setStep] = useState<1 | 2>(token ? 2 : 1);
+  const step = token ? 2 : 1;
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
