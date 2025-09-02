@@ -206,7 +206,6 @@ const SignUpForm = () => {
                 <Input
                   placeholder="example@mail.com"
                   type="text"
-                  required
                   {...register("email", { required: "Введіть пошту" })}
                 />
               </AuthFormField>
@@ -281,6 +280,7 @@ const SignUpForm = () => {
           {step === 1 ? (
             <div className="flex gap-2">
               <Button
+                type="button"
                 onClick={() => router.push("/login")}
                 className="flex justify-between flex-grow"
               >
