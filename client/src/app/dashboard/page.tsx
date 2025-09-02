@@ -1,9 +1,12 @@
 "use client";
+import { signOut, useSession } from "next-auth/react";
 
+import AuthGuard from "@/components/AuthGuard";
 import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
 
 const Dashboard = () => {
+  const { data: session } = useSession();
+
   const logout = async () => {
     await signOut({
       callbackUrl: "/login",
@@ -11,10 +14,12 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      Hello user
-      <Button onClick={logout}>Logout</Button>
-    </div>
+    <AuthGuard>
+      <div className="flex flex-col gap-4">
+        Hello, {session?.user?.email}
+        <Button onClick={logout}>Logout</Button>
+      </div>
+    </AuthGuard>
   );
 };
 
