@@ -14,6 +14,7 @@ import AuthFormProgress from "@/components/auth-form/AuthFormProgress";
 import AuthFormContainer from "@/components/auth-form/AuthFormContainer";
 import SignUpSuccess from "./SignUpSuccess";
 import { registerUserStepOne, registerUserStepTwo } from "@/lib/auth";
+import { signIn } from "next-auth/react";
 
 type SignUpInputs = {
   companyName: string;
@@ -77,7 +78,6 @@ const SignUpForm = () => {
     control,
     formState: { errors, isSubmitting },
     reset,
-    getValues,
     watch,
   } = useForm<SignUpInputs>({
     defaultValues: {
@@ -111,14 +111,23 @@ const SignUpForm = () => {
       return null;
     }
 
-    await registerUserStepTwo({
-      accessCode: data.code,
-      password: data.password,
-      repeatPassword: data.repeatPassword,
-      phone: data.phone,
-      sessionId: watch("sessionId"),
-      userEmail: data.email,
-    });
+    try {
+      await registerUserStepTwo({
+        accessCode: data.code,
+        password: data.password,
+        repeatPassword: data.repeatPassword,
+        phone: data.phone,
+        sessionId: watch("sessionId"),
+        userEmail: data.email,
+      });
+      await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+    } catch (error: any) {
+      console.error(error);
+    }
 
     setStep(1);
     setSuccessSignUp(true);
@@ -324,7 +333,11 @@ const SignUpForm = () => {
           {step === 1 ? (
             <div className="flex gap-2">
               <Link href="/login" className="flex-grow">
-                <Button type="button" className="flex w-full justify-between">
+                <Button
+                  type="button"
+                  disabled={stepOneLoading}
+                  className="flex w-full justify-between"
+                >
                   <ArrowLeft />
                   Назад
                 </Button>
