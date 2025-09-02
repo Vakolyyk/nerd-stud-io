@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -279,17 +280,15 @@ const SignUpForm = () => {
           )}
           {step === 1 ? (
             <div className="flex gap-2">
-              <Button
-                type="button"
-                onClick={() => router.push("/login")}
-                className="flex justify-between flex-grow"
-              >
-                <ArrowLeft />
-                Назад
-              </Button>
+              <Link href="/login" className="flex-grow">
+                <Button type="button" className="flex w-full justify-between">
+                  <ArrowLeft />
+                  Назад
+                </Button>
+              </Link>
               <Button
                 onClick={stepOneComplete}
-                className="flex justify-between flex-grow bg-transparent-green text-green"
+                className="flex flex-grow justify-between bg-transparent-green text-green"
               >
                 Далі
                 <ArrowRight />

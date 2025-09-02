@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -30,11 +31,23 @@ const LoginForm = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormInputs>();
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    const result = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    });
+
+    if (!result?.ok) {
+      setError("password", { message: "Неправильна пошта або пароль" });
+      return null;
+    }
+
+    router.push("/dashboard");
     reset();
   };
 
@@ -88,17 +101,23 @@ const LoginForm = () => {
             </div>
           </AuthFormField>
           <div className="flex flex-col gap-2">
-            <Button type="submit" className="bg-transparent-green text-green">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-transparent-green text-green"
+            >
               Увійти
             </Button>
-            <Button>
+            <Button disabled={isSubmitting}>
               Увійти через Google
               <Image src={Google} alt="google" width={14} height={14} />
             </Button>
             <div className="my-2 mx-auto h-px w-[240px] bg-text-secondary" />
-            <Button type="button" onClick={() => router.push("/sign-up")}>
-              Створити акаунт
-            </Button>
+            <Link href="/sign-up">
+              <Button type="button" disabled={isSubmitting} className="w-full">
+                Створити акаунт
+              </Button>
+            </Link>
           </div>
         </form>
       </AuthFormContainer>
