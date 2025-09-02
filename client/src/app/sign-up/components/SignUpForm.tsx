@@ -103,7 +103,7 @@ const SignUpForm = () => {
       );
       setValue("code", newCode);
     }
-  }, [code]);
+  }, [code, setValue]);
 
   const onSubmit: SubmitHandler<SignUpInputs> = async (data) => {
     if (data.password !== data.repeatPassword) {
@@ -125,8 +125,10 @@ const SignUpForm = () => {
         password: data.password,
         redirect: false,
       });
-    } catch (error: any) {
-      console.error(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
     }
 
     setStep(1);

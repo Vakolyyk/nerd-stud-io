@@ -7,6 +7,7 @@ import {
   RegistrationStep2Response,
   ForgotPassword,
   ResetPassword,
+  JWTToken,
 } from "@/types/auth";
 
 type AuthenticateUser = {
@@ -33,7 +34,7 @@ export const authenticateUser = async (
     );
 
     return data;
-  } catch (error: any) {
+  } catch (error: unknown ) {
     if (axios.isAxiosError(error)) {
       console.error(
         "Authentication error:",
@@ -46,7 +47,7 @@ export const authenticateUser = async (
   }
 };
 
-export const refreshAccessToken = async (token: any) => {
+export const refreshAccessToken = async (token: JWTToken) => {
   try {
     const { data } = await axios.post<{
       accessToken: string;
@@ -64,7 +65,7 @@ export const refreshAccessToken = async (token: any) => {
       refreshToken: data.refreshToken || token.refreshToken,
       accessTokenExpires: Date.now() + data.expiresIn * 1000,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Refresh token error:", error);
     return { ...token, error: "RefreshAccessTokenError" };
   }
@@ -81,7 +82,7 @@ export const registerUserStepOne = async (body: RegistrationStepOne) => {
     );
 
     return data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || "Registration failed");
     }
@@ -100,7 +101,7 @@ export const registerUserStepTwo = async (body: RegistrationStepTwo) => {
     );
 
     return data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || "Registration failed");
     }
@@ -115,7 +116,7 @@ export const forgotPassword = async (body: ForgotPassword) => {
     });
 
     return data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || "Registration failed");
     }
@@ -130,7 +131,7 @@ export const resetPassword = async (body: ResetPassword) => {
     });
 
     return data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw new Error(error.response?.data?.message || "Registration failed");
     }
