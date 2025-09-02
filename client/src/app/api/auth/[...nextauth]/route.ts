@@ -1,10 +1,11 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { AuthUser, CustomSession, JWTToken } from "@/types/auth";
 import { authenticateUser, refreshAccessToken } from "@/lib/auth";
+import { JWT } from "next-auth/jwt";
 
-export const authOptions: AuthOptions = {
+const authOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -27,18 +28,17 @@ export const authOptions: AuthOptions = {
           companyName: authResult.user.companyName,
           accessToken: authResult.accessToken,
           refreshToken: authResult.refreshToken,
-          accessTokenExpires: Date.now() + 30 * 60 * 1000, // Наприклад 30 хвилин
+          accessTokenExpires: Date.now() + 30 * 60 * 1000,
         };
       },
     }),
   ],
-
-  session: { strategy: "jwt" },
-
+  session: { strategy: "jwt" as const },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: JWT, user: User }) {
       const u = user as AuthUser;
       const t = token as unknown as JWTToken;
+
       if (user) {
         return {
           ...token,
@@ -57,8 +57,7 @@ export const authOptions: AuthOptions = {
 
       return await refreshAccessToken(t);
     },
-
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session, token: JWT }) {
       const s = session as CustomSession;
       const t = token as unknown as JWTToken;
       s.user.id = t.id;
@@ -66,13 +65,12 @@ export const authOptions: AuthOptions = {
       s.user.companyName = t.companyName;
       s.accessToken = t.accessToken;
       s.error = t.error;
-
       return session;
     },
   },
-
   secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };
