@@ -58,3 +58,13 @@ export type RegistrationStep2Response = {
     companyName: string;
   };
 };
+
+export type ForgotPassword = {
+  email: string;
+};
+
+export type ResetPassword = {
+  password: string;
+  repeatPassword: string;
+  token: string;
+};

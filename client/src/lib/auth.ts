@@ -5,6 +5,8 @@ import {
   RegistrationStepTwo,
   RegistrationStep1Response,
   RegistrationStep2Response,
+  ForgotPassword,
+  ResetPassword,
 } from "@/types/auth";
 
 type AuthenticateUser = {
@@ -96,6 +98,36 @@ export const registerUserStepTwo = async (body: RegistrationStepTwo) => {
         headers: { "Content-Type": "application/json" },
       },
     );
+
+    return data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || "Registration failed");
+    }
+    throw new Error("Unexpected error during registration");
+  }
+};
+
+export const forgotPassword = async (body: ForgotPassword) => {
+  try {
+    const { data } = await axios.post(`/api/auth/forgot-password`, body, {
+      headers: { "Content-Type": "application/json" },
+    });
+
+    return data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || "Registration failed");
+    }
+    throw new Error("Unexpected error during registration");
+  }
+};
+
+export const resetPassword = async (body: ResetPassword) => {
+  try {
+    const { data } = await axios.post(`/api/auth/reset-password`, body, {
+      headers: { "Content-Type": "application/json" },
+    });
 
     return data;
   } catch (error: any) {

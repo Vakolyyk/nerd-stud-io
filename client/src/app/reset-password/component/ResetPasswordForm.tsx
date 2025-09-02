@@ -1,14 +1,19 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+import { Eye, EyeOff } from "lucide-react";
+
 import AuthFormContainer from "@/components/auth-form/AuthFormContainer";
 import AuthFormField from "@/components/auth-form/AuthFormField";
 import AuthFormProgress from "@/components/auth-form/AuthFormProgress";
 import SupportTeamLink from "@/components/auth-form/SupportTeamLink";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+
+import { forgotPassword, resetPassword } from "@/lib/auth";
 
 type ResetPasswordFormInputs = {
   email: string;
@@ -21,16 +26,19 @@ const ResetPasswordForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormInputs>();
 
-  const onSubmit: SubmitHandler<ResetPasswordFormInputs> = (data) => {
+  const onSubmit: SubmitHandler<ResetPasswordFormInputs> = async (data) => {
     if (step === 1 && Boolean(data.email)) {
+      forgotPassword({ email: data.email })
       setStep(2);
       return null;
     }
@@ -40,7 +48,12 @@ const ResetPasswordForm = () => {
       return null;
     }
 
-    console.log(data);
+    await resetPassword({
+      password: data.password,
+      repeatPassword: data.repeatPassword,
+      token: '064a73a32f3f3586c7e12ed516fe193a8ecbc4f0fe129eb2453a40ee6b367032', //template
+    });
+    router.push('/login');
     setStep(1);
     reset();
   };
@@ -127,7 +140,7 @@ const ResetPasswordForm = () => {
               </AuthFormField>
             </>
           )}
-          <Button type="submit" className="bg-transparent-green text-green">
+          <Button type="submit" disabled={isSubmitting} className="bg-transparent-green text-green">
             Відновити
           </Button>
         </form>
