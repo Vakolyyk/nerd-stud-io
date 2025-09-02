@@ -1,6 +1,6 @@
 type AuthFormContainerProps = {
   children: React.ReactNode;
-  className: string;
+  className?: string;
 };
 
 const AuthFormContainer = ({

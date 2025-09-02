@@ -4,10 +4,7 @@ import AuthFormContainer from "@/components/auth-form/AuthFormContainer";
 
 const SignUpPage = () => (
   <div className="flex flex-col justify-center">
-    <AuthFormContainer className="mb-7.5">
-      <SignUpForm />
-    </AuthFormContainer>
-    <SupportTeamLink />
+    <SignUpForm />
   </div>
 );
 
