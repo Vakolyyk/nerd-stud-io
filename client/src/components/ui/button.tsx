@@ -9,13 +9,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "bg-background-secondary shadow-xs hover:opacity-50",
-        link: "hover:underline"
+        default: "bg-background-secondary shadow-xs hover:opacity-50",
+        link: "hover:underline",
       },
       size: {
         default: "h-11 px-4 py-2",
-        link: "h-max p-0"
+        link: "h-max p-0",
       },
     },
     defaultVariants: {

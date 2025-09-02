@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 import { Eye, EyeOff } from "lucide-react";
 
@@ -9,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import Google from "../../../../public/google.png";
-import { SubmitHandler, useForm } from "react-hook-form";
 
 type LoginFormInputs = {
   email: string
@@ -19,6 +20,8 @@ type LoginFormInputs = {
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
+  const router = useRouter();
+  
   const {
     register,
     handleSubmit,
@@ -73,7 +76,7 @@ const LoginForm = () => {
           <Image src={Google} alt="google" width={14} height={14} />
         </Button>
         <div className="my-2 mx-auto h-px w-[240px] bg-text-secondary" />
-        <Button>Створити акаунт</Button>
+        <Button onClick={() => router.push("/sign-up")}>Створити акаунт</Button>
       </div>
     </form>
   );
