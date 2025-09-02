@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import AuthFormProgress from "@/components/AuthFormProgress";
+import AuthFormField from "@/components/auth-form/AuthFormField";
+import AuthFormProgress from "@/components/auth-form/AuthFormProgress";
 
 type SignUpInputs = {
   companyName: string;
@@ -63,19 +64,27 @@ const SignUpForm = () => {
 
   const router = useRouter();
 
-  const { register, handleSubmit, setValue, getValues, reset, watch } =
-    useForm<SignUpInputs>({
-        defaultValues: {
-           companyName: "",
-           companyAddress: "",
-           companyType: "",
-           email: "",
-           password: "",
-           repeatPassword: "",
-           phone: "",
-           code: ""
-        }
-    });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    control,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm<SignUpInputs>({
+    defaultValues: {
+      companyName: "",
+      companyAddress: "",
+      companyType: "restaurants_cafe",
+      email: "",
+      password: "",
+      repeatPassword: "",
+      phone: "",
+      code: "",
+    },
+  });
 
   const code = watch("code");
 
@@ -90,17 +99,25 @@ const SignUpForm = () => {
   }, [code]);
 
   const onSubmit: SubmitHandler<SignUpInputs> = (data) => {
+    if (data.password !== data.repeatPassword) {
+      setError("repeatPassword", { message: "Паролі не збігаються" });
+      return null;
+    }
     console.log(data);
-    setStep(1); 
+    setStep(1);
     reset();
   };
 
-  const IsStepOneCompleted = () => {
+  const stepOneComplete = () => {
     const companyName = watch("companyName");
     const companyAddress = watch("companyAddress");
     const companyType = watch("companyType");
 
-    return Boolean(companyName && companyAddress && companyType);
+    if (!Boolean(companyName && companyAddress && companyType)) {
+      return null;
+    }
+
+    setStep(2);
   };
 
   return (
@@ -117,107 +134,129 @@ const SignUpForm = () => {
       <AuthFormProgress activeStep={step} stepsCount={2} />
       {step === 1 ? (
         <>
-          <div>
-            <p className="mb-2 font-medium">Назва компанії</p>
+          <AuthFormField
+            title="Назва компанії"
+            error={errors.companyName?.message}
+          >
             <Input
               placeholder="Назва твоєї компанії"
               type="text"
-              required
-              {...register("companyName")}
+              {...register("companyName", {
+                required: "Введіть назву компанії",
+              })}
             />
-          </div>
-          <div>
-            <p className="mb-2 font-medium">Юридична адреса компанії</p>
+          </AuthFormField>
+          <AuthFormField
+            title="Юридична адреса компанії"
+            error={errors.companyAddress?.message}
+          >
             <Input
               placeholder="Адреса твоєї компанії"
               type="text"
-              required
-              {...register("companyAddress")}
+              {...register("companyAddress", {
+                required: "Введіть адресу компанії",
+              })}
             />
-          </div>
-          <div>
-            <p className="mb-2 font-medium">Тип компанії</p>
-            <RadioGroup
-              defaultValue="restaurants_cafe"
-              required
-              {...register("companyType")}
-            >
-              {companyTypes.map((type) => (
-                <div key={type.value} className="flex items-center gap-3">
-                  <RadioGroupItem value={type.value} id={type.value} />
-                  <label htmlFor={type.value} className="text-xs">
-                    {type.title}
-                  </label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
+          </AuthFormField>
+          <AuthFormField
+            title="Тип компанії"
+            error={errors.companyType?.message}
+          >
+            <Controller
+              name="companyType"
+              control={control}
+              rules={{ required: "Оберіть тип компанії" }}
+              render={({ field }) => (
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  className="flex flex-col gap-2"
+                >
+                  {companyTypes.map((type) => (
+                    <div key={type.value} className="flex items-center gap-3">
+                      <RadioGroupItem value={type.value} id={type.value} />
+                      <label htmlFor={type.value} className="text-xs">
+                        {type.title}
+                      </label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
+            />
+          </AuthFormField>
         </>
       ) : (
         <>
-          <div>
-            <p className="mb-2 font-medium">Електронна пошта</p>
+          <AuthFormField title="Електронна пошта" error={errors.email?.message}>
             <Input
               placeholder="example@mail.com"
               type="text"
               required
-              {...register("email")}
+              {...register("email", { required: "Введіть пошту" })}
             />
-          </div>
-          <div>
-            <p className="mb-2 font-medium">Телефон</p>
+          </AuthFormField>
+          <AuthFormField title="Телефон" error={errors.phone?.message}>
             <Input
               placeholder="+380 50 889 10 63"
               type="text"
-              required
-              {...register("phone")}
+              {...register("phone", { required: "Введіть телефон" })}
             />
-          </div>
-          <div className="relative">
-            <Input
-              type={showPassword ? "text" : "password"}
-              placeholder="************"
-              required
-              className="pr-8"
-              {...register("password")}
-            />
-            <Button
-              type="button"
-              className="absolute right-4 inset-y-[15px] p-0 h-max"
-              onClick={() => setShowPassword((value) => !value)}
-            >
-              {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
-            </Button>
-          </div>
-          <div className="relative">
-            <Input
-              type={showRepeatPassword ? "text" : "password"}
-              placeholder="************"
-              required
-              className="pr-8"
-              {...register("repeatPassword")}
-            />
-            <Button
-              type="button"
-              className="absolute right-4 inset-y-[15px] p-0 h-max"
-              onClick={() => setShowRepeatPassword((value) => !value)}
-            >
-              {showRepeatPassword ? <EyeOff size={14} /> : <Eye size={14} />}
-            </Button>
-          </div>
-          <div>
-            <p className="mb-2 font-medium">Твій код допуску до POS системи</p>
-            <div className="flex gap-2">
-              {code && code.split("").map((value, index) => (
-                <span
-                  key={index}
-                  className="flex items-center justify-center w-10 h-10 bg-background-secondary rounded-[10px] border border-text-secondary"
-                >
-                  {value}
-                </span>
-              ))}
+          </AuthFormField>
+          <AuthFormField title="Пароль" error={errors.password?.message}>
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="************"
+                className="pr-8"
+                {...register("password", { required: "Введіть пароль" })}
+              />
+              <Button
+                type="button"
+                className="absolute right-4 inset-y-[15px] p-0 h-max"
+                onClick={() => setShowPassword((value) => !value)}
+              >
+                {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+              </Button>
             </div>
-          </div>
+          </AuthFormField>
+          <AuthFormField
+            title="Повтори пароль"
+            error={errors.repeatPassword?.message}
+          >
+            <div className="relative">
+              <Input
+                type={showRepeatPassword ? "text" : "password"}
+                placeholder="************"
+                className="pr-8"
+                {...register("repeatPassword", {
+                  required: "Повторіть пароль",
+                })}
+              />
+              <Button
+                type="button"
+                className="absolute right-4 inset-y-[15px] p-0 h-max"
+                onClick={() => setShowRepeatPassword((value) => !value)}
+              >
+                {showRepeatPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+              </Button>
+            </div>
+          </AuthFormField>
+          <AuthFormField
+            title="Твій код допуску до POS системи"
+            error={errors.code?.message}
+          >
+            <div className="flex gap-2">
+              {code &&
+                code.split("").map((value, index) => (
+                  <span
+                    key={index}
+                    className="flex items-center justify-center w-10 h-10 bg-background-secondary rounded-[10px] border border-text-secondary"
+                  >
+                    {value}
+                  </span>
+                ))}
+            </div>
+          </AuthFormField>
         </>
       )}
       {step === 1 ? (
@@ -230,8 +269,7 @@ const SignUpForm = () => {
             Назад
           </Button>
           <Button
-            onClick={() => setStep(2)}
-            disabled={!IsStepOneCompleted()}
+            onClick={stepOneComplete}
             className="flex justify-between flex-grow bg-transparent-green text-green"
           >
             Далі

@@ -2,8 +2,8 @@
 @import "tw-animate-css";
 
 @font-face {
-  font-family: 'e-Ukraine';
-  src: url('/fonts/e-Ukraine-Regular.otf') format('opentype');
+  font-family: "e-Ukraine";
+  src: url("/fonts/e-Ukraine-Regular.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
 }
@@ -11,14 +11,13 @@
 :root {
   --background: #161617;
   --background-primary: #23232580;
-  --background-secondary: #1F1F1F;
+  --background-secondary: #1f1f1f;
   --text-primary: #ffffff;
   --text-secondary: #878787;
-  --text-accent: #C2E9DE;
-  --transparent-green: #48BB9B1A;
-  --green: #48BB9BE5;
+  --text-accent: #c2e9de;
+  --transparent-green: #48bb9b1a;
+  --green: #48bb9be5;
 }
-
 
 @theme {
   --color-background: var(--background);
@@ -31,10 +30,9 @@
   --color-green: var(--green);
 }
 
-
 @layer base {
   body {
-    font-family: 'e-Ukraine', sans-serif;
+    font-family: "e-Ukraine", sans-serif;
     color: var(--text-primary);
     background-color: var(--background);
   }

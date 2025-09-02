@@ -1,6 +1,6 @@
 import LoginForm from "./components/LoginForm";
-import AuthFormContainer from "@/components/AuthFormContainer";
-import SupportTeamLink from "@/components/SupportTeamLink";
+import AuthFormContainer from "@/components/auth-form/AuthFormContainer";
+import SupportTeamLink from "@/components/auth-form/SupportTeamLink";
 
 const LoginPage = () => (
   <div className="flex flex-col justify-center">
