@@ -3,7 +3,7 @@ type ContainerProps = {
 };
 
 const Container = ({ children }: ContainerProps) => (
-  <div className="flex flex-grow mx-auto">{children}</div>
+  <div className="flex justify-center flex-grow">{children}</div>
 );
 
 export default Container;
