@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ArrowLeft, ArrowRight, Eye, EyeOff } from "lucide-react";
 
@@ -14,6 +13,7 @@ import SupportTeamLink from "@/components/auth-form/SupportTeamLink";
 import AuthFormProgress from "@/components/auth-form/AuthFormProgress";
 import AuthFormContainer from "@/components/auth-form/AuthFormContainer";
 import SignUpSuccess from "./SignUpSuccess";
+import { registerUserStepOne, registerUserStepTwo } from "@/lib/auth";
 
 type SignUpInputs = {
   companyName: string;
@@ -24,6 +24,7 @@ type SignUpInputs = {
   password: string;
   repeatPassword: string;
   code: string;
+  sessionId: string;
 };
 
 const companyTypes = [
@@ -64,10 +65,9 @@ const companyTypes = [
 const SignUpForm = () => {
   const [successSignUp, setSuccessSignUp] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
+  const [stepOneLoading, setStepOneLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-
-  const router = useRouter();
 
   const {
     register,
@@ -75,8 +75,9 @@ const SignUpForm = () => {
     setValue,
     setError,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
+    getValues,
     watch,
   } = useForm<SignUpInputs>({
     defaultValues: {
@@ -88,6 +89,7 @@ const SignUpForm = () => {
       repeatPassword: "",
       phone: "",
       code: "",
+      sessionId: "",
     },
   });
 
@@ -103,18 +105,27 @@ const SignUpForm = () => {
     }
   }, [code]);
 
-  const onSubmit: SubmitHandler<SignUpInputs> = (data) => {
+  const onSubmit: SubmitHandler<SignUpInputs> = async (data) => {
     if (data.password !== data.repeatPassword) {
       setError("repeatPassword", { message: "Паролі не збігаються" });
       return null;
     }
-    console.log(data);
+
+    await registerUserStepTwo({
+      accessCode: data.code,
+      password: data.password,
+      repeatPassword: data.repeatPassword,
+      phone: data.phone,
+      sessionId: watch("sessionId"),
+      userEmail: data.email,
+    });
+
     setStep(1);
     setSuccessSignUp(true);
     reset();
   };
 
-  const stepOneComplete = () => {
+  const stepOneComplete = async () => {
     const companyName = watch("companyName");
     const companyAddress = watch("companyAddress");
     const companyType = watch("companyType");
@@ -123,6 +134,14 @@ const SignUpForm = () => {
       return null;
     }
 
+    setStepOneLoading(true);
+    const { sessionId } = await registerUserStepOne({
+      companyName,
+      legalCompanyAddress: companyAddress,
+      companyType,
+    });
+    setStepOneLoading(false);
+    setValue("sessionId", sessionId);
     setStep(2);
   };
 
@@ -312,6 +331,7 @@ const SignUpForm = () => {
               </Link>
               <Button
                 onClick={stepOneComplete}
+                disabled={stepOneLoading}
                 className="flex flex-grow justify-between bg-transparent-green text-green"
               >
                 Далі
@@ -319,7 +339,11 @@ const SignUpForm = () => {
               </Button>
             </div>
           ) : (
-            <Button type="submit" className="bg-transparent-green text-green">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-transparent-green text-green"
+            >
               Зареєструватися
             </Button>
           )}

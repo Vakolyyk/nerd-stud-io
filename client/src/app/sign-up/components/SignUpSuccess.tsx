@@ -1,8 +1,20 @@
 import Image from "next/image";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import Dog from "../../../../public/dog.png";
 
 const SignUpSuccess = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push("/dashboard");
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [router]);
+
   return (
     <div className="flex flex-col gap-4 px-4 py-6 text-xs font-medium sm:w-[400px] bg-background-primary rounded-2xl">
       <h2 className="text-2xl">Акаунт успішно створено</h2>

@@ -1,5 +1,12 @@
 import axios from "axios";
 
+import {
+  RegistrationStepOne,
+  RegistrationStepTwo,
+  RegistrationStep1Response,
+  RegistrationStep2Response,
+} from "@/types/auth";
+
 type AuthenticateUser = {
   accessToken: string;
   refreshToken: string;
@@ -58,5 +65,43 @@ export const refreshAccessToken = async (token: any) => {
   } catch (error: any) {
     console.error("Refresh token error:", error);
     return { ...token, error: "RefreshAccessTokenError" };
+  }
+};
+
+export const registerUserStepOne = async (body: RegistrationStepOne) => {
+  try {
+    const { data } = await axios.post<RegistrationStep1Response>(
+      `/api/auth/registration/step1`,
+      body,
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+
+    return data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || "Registration failed");
+    }
+    throw new Error("Unexpected error during registration");
+  }
+};
+
+export const registerUserStepTwo = async (body: RegistrationStepTwo) => {
+  try {
+    const { data } = await axios.post<RegistrationStep2Response>(
+      `/api/auth/registration/step2`,
+      body,
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+
+    return data;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || "Registration failed");
+    }
+    throw new Error("Unexpected error during registration");
   }
 };
