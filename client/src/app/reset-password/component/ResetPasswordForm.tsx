@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { Eye, EyeOff } from "lucide-react";
@@ -22,7 +22,9 @@ type ResetPasswordFormInputs = {
 };
 
 const ResetPasswordForm = () => {
-  const [step, setStep] = useState<1 | 2>(1);
+  const token = useSearchParams().get('token');
+
+  const [step, setStep] = useState<1 | 2>(token ? 2 : 1);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
@@ -38,8 +40,9 @@ const ResetPasswordForm = () => {
 
   const onSubmit: SubmitHandler<ResetPasswordFormInputs> = async (data) => {
     if (step === 1 && Boolean(data.email)) {
-      forgotPassword({ email: data.email });
-      setStep(2);
+      await forgotPassword({ email: data.email });
+      router.push('/login');
+      alert("Лист для скидання паролю надіслано на пошту")
       return null;
     }
 
