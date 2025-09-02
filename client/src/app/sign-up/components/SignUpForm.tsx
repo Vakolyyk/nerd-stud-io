@@ -153,6 +153,10 @@ const SignUpForm = () => {
                   type="text"
                   {...register("companyName", {
                     required: "Введіть назву компанії",
+                    minLength: {
+                      value: 2,
+                      message: "Мінімум 2 символи",
+                    },
                   })}
                 />
               </AuthFormField>
@@ -165,6 +169,10 @@ const SignUpForm = () => {
                   type="text"
                   {...register("companyAddress", {
                     required: "Введіть адресу компанії",
+                    minLength: {
+                      value: 5,
+                      message: "Мінімум 5 символів",
+                    },
                   })}
                 />
               </AuthFormField>
@@ -214,7 +222,13 @@ const SignUpForm = () => {
                 <Input
                   placeholder="+380 50 889 10 63"
                   type="text"
-                  {...register("phone", { required: "Введіть телефон" })}
+                  {...register("phone", {
+                    required: "Введіть телефон",
+                    minLength: {
+                      value: 10,
+                      message: "Мінімум 10 символів",
+                    },
+                  })}
                 />
               </AuthFormField>
               <AuthFormField title="Пароль" error={errors.password?.message}>
@@ -223,7 +237,13 @@ const SignUpForm = () => {
                     type={showPassword ? "text" : "password"}
                     placeholder="************"
                     className="pr-8"
-                    {...register("password", { required: "Введіть пароль" })}
+                    {...register("password", {
+                      required: "Введіть пароль",
+                      minLength: {
+                        value: 6,
+                        message: "Мінімум 6 символів",
+                      },
+                    })}
                   />
                   <Button
                     type="button"
@@ -245,6 +265,10 @@ const SignUpForm = () => {
                     className="pr-8"
                     {...register("repeatPassword", {
                       required: "Повторіть пароль",
+                      minLength: {
+                        value: 6,
+                        message: "Мінімум 6 символів",
+                      },
                     })}
                   />
                   <Button

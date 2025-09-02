@@ -78,7 +78,13 @@ const ResetPasswordForm = () => {
                     type={showPassword ? "text" : "password"}
                     placeholder="************"
                     className="pr-8"
-                    {...register("password", { required: "Введіть пароль" })}
+                    {...register("password", {
+                      required: "Введіть пароль",
+                      minLength: {
+                        value: 6,
+                        message: "Мінімум 6 символів",
+                      },
+                    })}
                   />
                   <Button
                     type="button"
@@ -100,6 +106,10 @@ const ResetPasswordForm = () => {
                     className="pr-8"
                     {...register("repeatPassword", {
                       required: "Повторіть пароль",
+                      minLength: {
+                        value: 6,
+                        message: "Мінімум 6 символів",
+                      },
                     })}
                   />
                   <Button

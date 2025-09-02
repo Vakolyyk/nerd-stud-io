@@ -89,7 +89,13 @@ const LoginForm = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="************"
                 className="pr-8"
-                {...register("password", { required: "Введіть пароль" })}
+                {...register("password", {
+                  required: "Введіть пароль",
+                  minLength: {
+                    value: 6,
+                    message: "Мінімум 6 символів",
+                  },
+                })}
               />
               <Button
                 type="button"
