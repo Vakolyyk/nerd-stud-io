@@ -38,7 +38,7 @@ const ResetPasswordForm = () => {
 
   const onSubmit: SubmitHandler<ResetPasswordFormInputs> = async (data) => {
     if (step === 1 && Boolean(data.email)) {
-      forgotPassword({ email: data.email })
+      forgotPassword({ email: data.email });
       setStep(2);
       return null;
     }
@@ -51,10 +51,10 @@ const ResetPasswordForm = () => {
     await resetPassword({
       password: data.password,
       repeatPassword: data.repeatPassword,
-      token: '064a73a32f3f3586c7e12ed516fe193a8ecbc4f0fe129eb2453a40ee6b367032', //template
+      token: "064a73a32f3f3586c7e12ed516fe193a8ecbc4f0fe129eb2453a40ee6b367032", //template
     });
-    router.push('/login');
-    setStep(1);
+
+    router.push("/login");
     reset();
   };
 
@@ -140,7 +140,11 @@ const ResetPasswordForm = () => {
               </AuthFormField>
             </>
           )}
-          <Button type="submit" disabled={isSubmitting} className="bg-transparent-green text-green">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-transparent-green text-green"
+          >
             Відновити
           </Button>
         </form>

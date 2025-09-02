@@ -7,7 +7,7 @@ type AuthFormFieldProps = {
 const AuthFormField = ({ children, title, error = "" }: AuthFormFieldProps) => {
   return (
     <div>
-      <p className="mb-2 font-medium">{title}</p>
+      <div className="mb-2 font-medium">{title}</div>
       {children}
       {error && <p className="px-4 text-xs text-red-500">{error}</p>}
     </div>

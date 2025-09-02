@@ -31,11 +31,11 @@ type SignUpInputs = {
 const companyTypes = [
   {
     title: "Ресторани та кафе",
-    value: "restaurants_cafe",
+    value: "restaurant_cafe",
   },
   {
     title: "Роздрібна торгівля",
-    value: "retail",
+    value: "retail_trade",
   },
   {
     title: "Сфера краси та здоров’я",
@@ -51,7 +51,7 @@ const companyTypes = [
   },
   {
     title: "Івент-компанії та квиткові сервіси",
-    value: "event_ticket_services",
+    value: "real_estate_ticket_services",
   },
   {
     title: "Фітнес та дозвілля",
@@ -83,7 +83,7 @@ const SignUpForm = () => {
     defaultValues: {
       companyName: "",
       companyAddress: "",
-      companyType: "restaurants_cafe",
+      companyType: "restaurant_cafe",
       email: "",
       password: "",
       repeatPassword: "",
