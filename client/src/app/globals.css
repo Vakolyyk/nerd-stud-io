@@ -1,0 +1,48 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@font-face {
+  font-family: "e-Ukraine";
+  src: url("/fonts/e-Ukraine-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --background: #161617;
+  --background-primary: #23232580;
+  --background-secondary: #1f1f1f;
+  --text-primary: #ffffff;
+  --text-secondary: #878787;
+  --text-accent: #c2e9de;
+  --transparent-green: #48bb9b1a;
+  --green: #48bb9be5;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-background-primary: var(--background-primary);
+  --color-background-secondary: var(--background-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-accent: var(--text-accent);
+  --color-transparent-green: var(--transparent-green);
+  --color-green: var(--green);
+}
+
+@layer base {
+  body {
+    font-family: "e-Ukraine", sans-serif;
+    color: var(--text-primary);
+    background-color: var(--background);
+  }
+}
+
+@keyframes progress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}

@@ -1,22 +1,26 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+  subsets: ["latin"], // які підмножини символів потрібні
+  weight: ["400", "500", "700"], // варіанти товщини
+  variable: "--font-montserrat", // якщо хочеш використовувати через CSS variable
+});
+
 const CARD_SIZE_LG = 365;
 const CARD_SIZE_SM = 290;
 
-const BORDER_SIZE = 2;
-const CORNER_CLIP = 50;
-const CORNER_LINE_LEN = Math.sqrt(
-  CORNER_CLIP * CORNER_CLIP + CORNER_CLIP * CORNER_CLIP
-);
+const ROTATE_DEG = 4;
 
-const ROTATE_DEG = 2.5;
-
-const STAGGER = 15;
+const STAGGER = 35;
 const CENTER_STAGGER = -65;
 
-const SECTION_HEIGHT = 600;
+const SECTION_HEIGHT = 630;
 
 export const StaggerTestimonials = () => {
   const [cardSize, setCardSize] = useState(CARD_SIZE_LG);
@@ -73,7 +77,7 @@ export const StaggerTestimonials = () => {
 
   return (
     <div
-      className="relative w-full overflow-hidden bg-neutral-200"
+      className={`relative w-full flex-grow overflow-hidden bg-neutral-200 ${montserrat.className}`}
       style={{
         height: SECTION_HEIGHT,
       }}
@@ -100,13 +104,13 @@ export const StaggerTestimonials = () => {
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-8">
         <button
           onClick={() => handleMove(-1)}
-          className="grid h-14 w-14 place-content-center text-3xl transition-colors hover:bg-black hover:text-white"
+          className="grid h-14 w-14 place-content-center text-[40px] text-black transition-colors hover:bg-black hover:text-white"
         >
           <GoArrowLeft />
         </button>
         <button
           onClick={() => handleMove(1)}
-          className="grid h-14 w-14 place-content-center text-3xl transition-colors hover:bg-black hover:text-white"
+          className="grid h-14 w-14 place-content-center text-[40px] text-black transition-colors hover:bg-black hover:text-white"
         >
           <GoArrowRight />
         </button>
@@ -129,29 +133,31 @@ const TestimonialCard = ({
   cardSize,
 }: TestimonialProps) => {
   const isActive = position === 0;
+  const [name, role] = testimonial.by.split(",");
 
   return (
     <motion.div
       initial={false}
       onClick={() => handleMove(position)}
       className={`
-      absolute left-1/2 top-1/2 cursor-pointer border-black p-8 text-black transition-colors duration-500 ${
-        isActive ? "z-10 bg-indigo-600" : "z-0 bg-white"
-      }
+        absolute left-1/2 top-1/2 rounded-[20px] cursor-pointer p-6 
+        shadow-[0_0_10px_0_rgba(0,0,0,0.5)] transition-colors duration-500
+        ${isActive ? "z-10 bg-[#192C3D] text-[#F5F8F9]" : `z-0 border-3 bg-[#F5F8F9] text-black`}
       `}
       style={{
-        borderWidth: BORDER_SIZE,
-        clipPath: `polygon(${CORNER_CLIP}px 0%, calc(100% - ${CORNER_CLIP}px) 0%, 100% ${CORNER_CLIP}px, 100% 100%, calc(100% - ${CORNER_CLIP}px) 100%, ${CORNER_CLIP}px 100%, 0 100%, 0 0)`,
+        borderColor: isActive ? "" : testimonial.color,
       }}
       animate={{
-        width: cardSize,
-        height: cardSize,
+        width: 320,
+        height: 460,
         x: `calc(-50% + ${position * (cardSize / 1.5)}px)`,
         y: `calc(-50% + ${
           isActive ? CENTER_STAGGER : position % 2 ? STAGGER : -STAGGER
         }px)`,
-        rotate: isActive ? 0 : position % 2 ? ROTATE_DEG : -ROTATE_DEG,
-        boxShadow: isActive ? "0px 8px 0px 4px black" : "0px 0px 0px 0px black",
+        rotate: isActive ? 0 : position % 2 ? -ROTATE_DEG : ROTATE_DEG,
+        boxShadow: isActive
+          ? "0px 0px 10px 0px rgba(0,0,0,0.5)"
+          : `0px 0px 10px 0px ${testimonial.color}`,
       }}
       transition={{
         type: "spring",
@@ -160,37 +166,24 @@ const TestimonialCard = ({
         damping: 50,
       }}
     >
-      <span
-        className="absolute block origin-top-right rotate-45 bg-black object-cover"
-        style={{
-          right: -BORDER_SIZE,
-          top: CORNER_CLIP - BORDER_SIZE,
-          width: CORNER_LINE_LEN,
-          height: BORDER_SIZE,
-        }}
-      />
-      <img
-        src={testimonial.imgSrc}
-        alt={`Testimonial image for ${testimonial.by}`}
-        className="mb-4 h-14 w-12 bg-neutral-600 object-cover object-top"
-        style={{
-          boxShadow: "3px 3px 0px white",
-        }}
-      />
-      <h3
-        className={`text-base sm:text-xl ${
-          isActive ? "text-white" : "text-black"
-        }`}
-      >
-        "{testimonial.testimonial}"
-      </h3>
-      <p
-        className={`absolute bottom-8 left-8 right-8 mt-2 text-sm italic ${
-          isActive ? "text-indigo-200" : "text-neutral-700"
-        }`}
-      >
-        - {testimonial.by}
-      </p>
+      <div className="mb-4 flex justify-between text-xs font-normal">
+        <img
+          src={testimonial.imgSrc}
+          alt={`Testimonial image for ${testimonial.by}`}
+          className="h-[120px] w-[120px] rounded-full object-cover object-top"
+        />
+        <p className="flex flex-col">
+          <span className="flex gap-1 items-center">
+            <span>@{name}</span>
+            <img src="/linkedin.png" alt="linkedin" />
+          </span>
+          <span />
+        </p>
+      </div>
+      <h3 className={`text-sm font-medium text-end`}>{name}</h3>
+      <p className="text-xs text-end mb-[128px]">{name}@company.com</p>
+      <p className="text-sm mb-7.5">{testimonial.testimonial}</p>
+      <p className="text-xs text-end font-semibold mb-7.5">-- {role}</p>
     </motion.div>
   );
 };
@@ -200,88 +193,102 @@ type TestimonialType = {
   testimonial: string;
   by: string;
   imgSrc: string;
+  color: string;
 };
 
+const colors = ["#0077B6", "#F4A261", "#6930C3", "#5FAF4D", "#E63946"];
 const TESTIMONIAL_DATA: TestimonialType[] = [
   {
     tempId: 0,
     testimonial:
       "My favorite solution in the market. We work 5x faster with COMPANY.",
     by: "Alex, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/1.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#0077B6",
   },
   {
     tempId: 1,
     testimonial:
       "I'm confident my data is safe with COMPANY. I can't say that about other providers.",
     by: "Dan, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/2.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#F4A261",
   },
   {
     tempId: 2,
     testimonial:
       "I know it's cliche, but we were lost before we found COMPANY. Can't thank you guys enough!",
     by: "Stephanie, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/3.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#6930C3",
   },
   {
     tempId: 3,
     testimonial:
       "COMPANY's products make planning for the future seamless. Can't recommend them enough!",
     by: "Marie, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/4.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#5FAF4D",
   },
   {
     tempId: 4,
     testimonial: "If I could give 11 stars, I'd give 12.",
     by: "Andre, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/5.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#E63946",
   },
   {
     tempId: 5,
     testimonial:
       "SO SO SO HAPPY WE FOUND YOU GUYS!!!! I'd bet you've saved me 100 hours so far.",
     by: "Jeremy, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/6.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#0077B6",
   },
   {
     tempId: 6,
     testimonial:
       "Took some convincing, but now that we're on COMPANY, we're never going back.",
     by: "Pam, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/7.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#F4A261",
   },
   {
     tempId: 7,
     testimonial:
       "I would be lost without COMPANY's in depth analytics. The ROI is EASILY 100X for us.",
     by: "Daniel, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/8.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#6930C3",
   },
   {
     tempId: 8,
     testimonial: "It's just the best. Period.",
     by: "Fernando, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/9.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#5FAF4D",
   },
   {
     tempId: 9,
     testimonial: "I switched 5 years ago and never looked back.",
     by: "Andy, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/10.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#E63946",
   },
   {
     tempId: 10,
     testimonial:
       "I've been searching for a solution like COMPANY for YEARS. So glad I finally found one!",
     by: "Pete, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/11.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#0077B6",
   },
   {
     tempId: 11,
     testimonial:
       "It's so simple and intuitive, we got the team up to speed in 10 minutes.",
     by: "Marina, CEO at COMPANY",
-    imgSrc: "/imgs/head-shots/12.jpg",
+    imgSrc: "/29916.jpg",
+    color: "#F4A261",
   },
 ];
